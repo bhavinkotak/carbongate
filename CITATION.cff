@@ -4,8 +4,8 @@ type: software
 title: "CarbonGate: Carbon-Aware Quality Gates for Kubernetes GitOps"
 version: 1.0.0
 date-released: 2026-02-08
-url: "https://github.com/bhavinkotak/green-gitops"
-repository-code: "https://github.com/bhavinkotak/green-gitops"
+url: "https://github.com/bhavinkotak/carbongate"
+repository-code: "https://github.com/bhavinkotak/carbongate"
 license: Apache-2.0
 authors:
   - family-names: "Kotak"

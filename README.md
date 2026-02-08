@@ -301,12 +301,12 @@ python -m carbongate.gate check --deployment=my-app --region=us-east-1
 ## Citation
 
 ```bibtex
-@article{kotak2024carbongate,
+@article{kotak2026carbongate,
   title={Carbon-Aware GitOps: Implementing Energy-Efficient Quality Gates 
          in Kubernetes Delivery Workflows},
   author={Kotak, Bhavin},
-  year={2024},
-  doi={10.5281/zenodo.XXXXXXX}
+  year={2026},
+  note={Zenodo DOI pending}
 }
 ```
 

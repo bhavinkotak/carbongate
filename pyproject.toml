@@ -64,10 +64,10 @@ full = [
 carbongate = "carbongate.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/bhavinkotak/green-gitops"
-Documentation = "https://github.com/bhavinkotak/green-gitops#readme"
-Repository = "https://github.com/bhavinkotak/green-gitops"
-Issues = "https://github.com/bhavinkotak/green-gitops/issues"
+Homepage = "https://github.com/bhavinkotak/carbongate"
+Documentation = "https://github.com/bhavinkotak/carbongate#readme"
+Repository = "https://github.com/bhavinkotak/carbongate"
+Issues = "https://github.com/bhavinkotak/carbongate/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

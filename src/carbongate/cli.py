@@ -161,7 +161,7 @@ def version():
     click.echo("Carbon-Aware Quality Gates for Kubernetes GitOps")
     click.echo("")
     click.echo("Author: Bhavin Kotak <bhavin.kotak@ibm.com>")
-    click.echo("Repository: https://github.com/bhavinkotak/green-gitops")
+    click.echo("Repository: https://github.com/bhavinkotak/carbongate")
 
 
 if __name__ == "__main__":
