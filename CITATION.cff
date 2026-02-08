@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "CarbonGate: Carbon-Aware Quality Gates for Kubernetes GitOps"
+version: 1.0.0
+date-released: 2026-02-08
+url: "https://github.com/bhavinkotak/green-gitops"
+repository-code: "https://github.com/bhavinkotak/green-gitops"
+license: Apache-2.0
+authors:
+  - family-names: "Kotak"
+    given-names: "Bhavin"
+    email: "bhavin.kotak@ibm.com"
+    affiliation: "IBM Thomas J. Watson Research Center"
+    orcid: "https://orcid.org/0009-0006-4793-7046"
+keywords:
+  - green-computing
+  - gitops
+  - kubernetes
+  - carbon-aware
+  - sustainable-software
+  - devops
+  - continuous-delivery
+abstract: >-
+  CarbonGate is a framework for integrating carbon-awareness into 
+  GitOps workflows for Kubernetes deployments. It implements intelligent
+  quality gates that consider real-time grid carbon intensity when making
+  deployment decisions, enabling organizations to reduce deployment-associated
+  carbon emissions by 23-31% while maintaining acceptable deployment velocity.
+references:
+  - type: article
+    authors:
+      - family-names: "Kotak"
+        given-names: "Bhavin"
+    title: "Carbon-Aware GitOps: Implementing Energy-Efficient Quality Gates in Kubernetes Delivery Workflows"
+    year: 2026
