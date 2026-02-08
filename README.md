@@ -264,7 +264,7 @@ green-gitops/
 
 ```bash
 # Clone repository
-git clone https://github.com/carbongate/carbongate
+git clone https://github.com/bhavinkotak/carbongate
 cd carbongate
 
 # Create virtual environment
