@@ -1,0 +1,63 @@
+{
+  "title": "Carbon-Aware GitOps Gates Revisited: A Preregistered Trace-Driven Evaluation of CarbonGate on Great Britain Grid Data",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "description": "<p>A GitOps pipeline starts a deployment as soon as a change merges, whatever the carbon intensity of the grid at that moment. CarbonGate puts a carbon-aware admission gate in front of the GitOps reconciler. Urgent changes pass at once. Other deployments may wait for a low-intensity slot in the forecast, within a maximum-delay service-level agreement. This revision replaces the unsupported production figures of version 1 with a preregistered, trace-driven evaluation. We replay a simulated deployment workload against 12 months of half-hourly Great Britain grid data from the NESO Carbon Intensity API. The gate decides from the published forecast alone, and emissions are scored on the reported actual intensity. Over 11 held-out months and 5 seeds, forecast-based deferral with a 4 h limit cut the average-intensity emissions of deployments by 4.80% (95% CI 4.17 to 5.43%), and no deployment missed its deadline. That interval contains the preregistered 5% bound, so the primary hypothesis is inconclusive. The version 1 claim of at least 23% is refuted. A perfect-foresight oracle reached 7.33%. A static intensity threshold, which was the version 1 gate design, did not reduce emissions at 2 h or 4 h limits. Gains shrank as forecast error grew and were gone at a noise level of 50 gCO2/kWh. Under injected forecaster outages, fail-closed handling caused deadline violations; a cached persistence fallback still kept 4.24% at 50% outage. At 100 times the load, with a per-slot capacity cap, herding removed the benefit. We did not study developer acceptance.</p><p><strong>Changes in version 2.0</strong></p><ul><li>All v1 production-evaluation figures are withdrawn (deployment counts, 23-31% reductions, latency, 92% developer acceptance, false-positive and cost figures). No data or code supported them.</li><li>In their place is a preregistered trace-driven replay on 12 months of real GB grid data (NESO Carbon Intensity API, CC BY 4.0) with a labelled simulated workload, 11 held-out months, 5 seeds and 95% confidence intervals.</li><li>CarbonGate now has a formal specification: system model, objective, constraints, and the forecast-deferral and threshold rules. Fail-open, fail-closed and cached-persistence behaviour for forecaster outages and timeouts is defined and tested under injected failures.</li><li>New ablations vary the forecast source and noise, delay limit, margin, urgent share, arrival shape and region. A 100x load test adds a capacity cap.</li><li>Results as measured: the primary hypothesis (at least 5% reduction) is inconclusive at 4.80% (95% CI 4.17 to 5.43%), and the v1 claim of at least 23% is refuted. The v1 static threshold gate did not reduce emissions at 2 h or 4 h.</li><li>Unverifiable references are replaced by 21 DOI/arXiv-verified references plus software/API documentation. The record ships the code, cached data, results, tests and preregistration.</li></ul><p>To reproduce, unzip the code-data archive and run <em>python code/run_all.py</em> (Python 3.12; see code/requirements.txt).</p>",
+  "creators": [
+    {
+      "name": "Kotak, Bhavin",
+      "affiliation": "IBM Corporation, Armonk, NY",
+      "orcid": "0009-0006-4793-7046"
+    }
+  ],
+  "keywords": [
+    "Carbon-aware computing",
+    "GitOps",
+    "Continuous delivery",
+    "Kubernetes",
+    "Temporal workload shifting",
+    "Grid carbon intensity",
+    "Sustainable software engineering",
+    "Trace-driven simulation"
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "version": "2.0",
+  "language": "eng",
+  "references": [
+    "Wiesner, P.; Behnke, I.; Scheinert, D. et al. (2021). Let's Wait Awhile: How Temporal Workload Shifting Can Reduce Carbon Emissions in the Cloud. Proceedings of the 22nd International Middleware Conference. https://doi.org/10.1145/3464298.3493399",
+    "Sukprasert, T.; Souza, A.; Bashir, N. et al. (2024). On the Limitations of Carbon-Aware Temporal and Spatial Workload Shifting in the Cloud. Proceedings of the Nineteenth European Conference on Computer Systems (EuroSys). https://doi.org/10.1145/3627703.3650079",
+    "Radovanović, A.; Koningstein, R.; Schneider, I. et al. (2023). Carbon-Aware Computing for Datacenters. IEEE Transactions on Power Systems. https://doi.org/10.1109/TPWRS.2022.3173250",
+    "Hanafy, W. A.; Liang, Q.; Bashir, N. et al. (2023). CarbonScaler: Leveraging Cloud Workload Elasticity for Optimizing Carbon-Efficiency. Proceedings of the ACM on Measurement and Analysis of Computing Systems. https://doi.org/10.1145/3626788",
+    "Chadha, M.; Subramanian, T.; Arima, E. et al. (2023). GreenCourier: Carbon-Aware Scheduling for Serverless Functions. Proceedings of the 9th International Workshop on Serverless Computing. https://doi.org/10.1145/3631295.3631396",
+    "Dodge, J.; Prewitt, T.; Tachet des Combes, R. et al. (2022). Measuring the Carbon Intensity of AI in Cloud Instances. Proceedings of the 2022 ACM Conference on Fairness, Accountability, and Transparency. https://doi.org/10.1145/3531146.3533234",
+    "Masanet, E.; Shehabi, A.; Lei, N. et al. (2020). Recalibrating Global Data Center Energy-Use Estimates. Science. https://doi.org/10.1126/science.aba3758",
+    "Maji, D.; Shenoy, P.; Sitaraman, R. K. (2022). CarbonCast: Multi-Day Forecasting of Grid Carbon Intensity. Proceedings of the 9th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation. https://doi.org/10.1145/3563357.3564079",
+    "Beetz, F.; Harrer, S. (2022). GitOps: The Evolution of DevOps?. IEEE Software. https://doi.org/10.1109/MS.2021.3119106",
+    "Gupta, U.; Kim, Y. G.; Lee, S. et al. (2021). Chasing Carbon: The Elusive Environmental Footprint of Computing. Proceedings of the IEEE International Symposium on High-Performance Computer Architecture (HPCA). https://doi.org/10.1109/HPCA51647.2021.00076",
+    "Amaral, M.; Chen, H.; Chiba, T. et al. (2023). Kepler: A Framework to Calculate the Energy Consumption of Containerized Applications. Proceedings of the IEEE 16th International Conference on Cloud Computing (CLOUD). https://doi.org/10.1109/CLOUD60044.2023.00017",
+    "Souza, A.; Bashir, N.; Murillo, J. et al. (2023). Ecovisor: A Virtual Energy System for Carbon-Efficient Applications. Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS), Volume 2. https://doi.org/10.1145/3575693.3575709",
+    "Bashir, N.; Guo, T.; Hajiesmaili, M. et al. (2021). Enabling Sustainable Clouds: The Case for Virtualizing the Energy System. Proceedings of the ACM Symposium on Cloud Computing (SoCC). https://doi.org/10.1145/3472883.3487009",
+    "Siler-Evans, K.; Azevedo, I. L.; Morgan, M. G. (2012). Marginal Emissions Factors for the U.S. Electricity System. Environmental Science & Technology. https://doi.org/10.1021/es300145v",
+    "Acun, B.; Lee, B.; Kazhamiaka, F. et al. (2023). Carbon Explorer: A Holistic Framework for Designing Carbon Aware Datacenters. Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS), Volume 2. https://doi.org/10.1145/3575693.3575754",
+    "Shahin, M.; Ali Babar, M.; Zhu, L. (2017). Continuous Integration, Delivery and Deployment: A Systematic Review on Approaches, Tools, Challenges and Practices. IEEE Access. https://doi.org/10.1109/ACCESS.2017.2685629",
+    "Lannelongue, L.; Grealey, J.; Inouye, M. (2021). Green Algorithms: Quantifying the Carbon Footprint of Computation. Advanced Science. https://doi.org/10.1002/advs.202100707",
+    "Li, A.; Liu, S.; Ding, Y. (2024). Uncertainty-Aware Decarbonization for Datacenters. arXiv:2407.02390. https://arxiv.org/abs/2407.02390",
+    "Yang, J.; Saad, Z.; Wu, J. et al. (2025). A Survey on Task Scheduling in Carbon-Aware Container Orchestration. arXiv:2508.05949. https://arxiv.org/abs/2508.05949",
+    "Anderson, T.; Belay, A.; Chowdhury, M. et al. (2022). Treehouse: A Case For Carbon-Aware Datacenter Software. arXiv:2201.02120. https://arxiv.org/abs/2201.02120",
+    "Lindberg, J.; Lesieutre, B. C.; Roald, L. A. (2022). Using Geographic Load Shifting to Reduce Carbon Emissions. arXiv:2203.00826. https://arxiv.org/abs/2203.00826",
+    "National Energy System Operator (2026). Carbon Intensity API for Great Britain. https://carbon-intensity.github.io/api-definitions/",
+    "Green Software Foundation (2024). Software Carbon Intensity (SCI) Specification. https://sci.greensoftware.foundation/",
+    "Argo Project (2026). Argo CD: Declarative GitOps Continuous Delivery for Kubernetes. https://argo-cd.readthedocs.io/",
+    "Flux Project (2026). Flux: GitOps Toolkit for Kubernetes. https://fluxcd.io/",
+    "The Kubernetes Authors (2026). Dynamic Admission Control. https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/"
+  ],
+  "notes": "Reproduce all results, tables, and figures: unzip green-gitops-v2-code-data.zip, install code/requirements.txt (numpy, scipy, pandas, matplotlib, pytest), then run 'python code/run_all.py' from the archive root (offline with the cached raw data, about one minute on a laptop CPU). Tests: 'python -m pytest tests'. The deployment workload is simulated; grid data are real (NESO Carbon Intensity API, CC BY 4.0).",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/bhavinkotak/carbongate",
+      "relation": "isSupplementedBy",
+      "resource_type": "software"
+    }
+  ]
+}

@@ -1,5 +1,20 @@
 # CarbonGate: Carbon-Aware Quality Gates for Kubernetes GitOps
 
+<!-- v2-release -->
+## Version 2.0 (November 2026)
+
+The v2 release is a preregistered, reproducible rewrite of the paper:
+**Carbon-Aware GitOps Gates Revisited: A Preregistered Trace-Driven Evaluation of CarbonGate on Great Britain Grid Data**
+
+- Paper, code, data sources, results and tests: [`v2/`](v2/)
+- Archived on Zenodo: [10.5281/zenodo.23970103](https://doi.org/10.5281/zenodo.23970103) (v1: [10.5281/zenodo.18527247](https://doi.org/10.5281/zenodo.18527247))
+- Preregistered verdict: H1: INCONCLUSIVE, H2_v1_claim: REFUTED
+- Reproduce: `python v2/code/run_all.py`
+
+Every number in the v2 paper is produced by this code from logged results. Claims from v1 that had no
+supporting data were removed; `v2/REVIEW.md` lists them.
+<!-- v2-release -->
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-blue.svg)](https://kubernetes.io/)
 [![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/)
@@ -317,7 +332,7 @@ This project is licensed under the Apache License 2.0 - see [LICENSE](LICENSE) f
 ## Author
 
 **Bhavin Kotak**  
-IBM Thomas J. Watson Research Center  
+IBM Corporation  
 bhavin.kotak@ibm.com  
 ORCID: [0009-0006-4793-7046](https://orcid.org/0009-0006-4793-7046)
 

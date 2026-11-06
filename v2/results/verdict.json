@@ -1,0 +1,27 @@
+{
+  "H1": {
+    "verdict": "INCONCLUSIVE",
+    "endpoint": "mean held-out relative reduction, CarbonGate-F, 4 h SLA, NESO forecast",
+    "threshold": 0.05,
+    "mean": 0.04803962005029707,
+    "ci95": [
+      0.0417370635700213,
+      0.05434217653057284
+    ],
+    "std_months": 0.009381468774472256,
+    "n_months": 11,
+    "n_seeds": 5,
+    "sla_violations": 0,
+    "numerator_kg_per_seed": 0.36854870339261797,
+    "denominator_kg_per_seed": 7.52422556809946
+  },
+  "H2_v1_claim": {
+    "verdict": "REFUTED",
+    "threshold": 0.23,
+    "mean": 0.04803962005029707,
+    "ci95": [
+      0.0417370635700213,
+      0.05434217653057284
+    ]
+  }
+}

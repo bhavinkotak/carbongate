@@ -1,0 +1,104 @@
+{
+ "n_slots_record": 17568,
+ "n_slots_held_out": 16080,
+ "missing_forecast_slots": 0,
+ "missing_actual_slots": 1,
+ "interpolated_actual_slots": 1,
+ "held_out_actual_mean": 121.39953358208955,
+ "held_out_actual_std": 52.539531105278755,
+ "held_out_actual_min": 20.0,
+ "held_out_actual_max": 286.0,
+ "held_out_daily_range_mean": 99.8865671641791,
+ "neso_forecast_mae": 9.994091672367684,
+ "neso_forecast_rmse": 14.440703799995138,
+ "neso_forecast_bias": -0.48168418433982213,
+ "persistence_mae": 39.89177758427665,
+ "monthly_mean_actual": {
+  "2025-11": 126.09375,
+  "2025-12": 120.1989247311828,
+  "2026-01": 144.7029569892473,
+  "2026-02": 136.625,
+  "2026-03": 117.16868279569893,
+  "2026-04": 93.43958333333333,
+  "2026-05": 122.5100806451613,
+  "2026-06": 132.4763888888889,
+  "2026-07": 121.4260752688172,
+  "2026-08": 124.40961021505376,
+  "2026-09": 108.18541666666667,
+  "2026-10": 114.75470430107526
+ },
+ "regional_mean_forecast": {
+  "North Scotland": 6.614237160120846,
+  "North West England": 39.86763595166163,
+  "South Wales": 256.14010574018124,
+  "East England": 126.14205689828802,
+  "London": 144.10158610271904
+ },
+ "regional_interpolated_slots": {
+  "North Scotland": 192,
+  "North West England": 192,
+  "South Wales": 192,
+  "East England": 192,
+  "London": 192
+ },
+ "regional_zero_fraction": {
+  "North Scotland": 0.8439054726368159,
+  "North West England": 0.0028606965174129352,
+  "South Wales": 6.218905472636816e-05,
+  "East England": 0.0008706467661691543,
+  "London": 0.0
+ },
+ "static_threshold_theta": 115.5,
+ "zero_actual_slots_set_missing": 1,
+ "latency_probe": {
+  "endpoint": "https://api.carbonintensity.org.uk/intensity/{start}/fw24h",
+  "retrieved_utc": "2026-11-05T03:56:51+00:00",
+  "n_calls": 20,
+  "n_ok": 20,
+  "p50_s": 0.5338458334954339,
+  "p95_s": 0.5954940854586311,
+  "max_s": 0.6365974590007681,
+  "gate_timeout_s": 2.0,
+  "n_over_timeout": 0
+ },
+ "runtime_s": 122.6,
+ "config": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "deadlines_h": [
+   2,
+   4,
+   8
+  ],
+  "delta": 0.05,
+  "held_out": [
+   "2025-12",
+   "2026-01",
+   "2026-02",
+   "2026-03",
+   "2026-04",
+   "2026-05",
+   "2026-06",
+   "2026-07",
+   "2026-08",
+   "2026-09",
+   "2026-10"
+  ],
+  "calibration": "2025-11",
+  "primary": {
+   "policy": "deferral",
+   "max_delay_h": 4,
+   "forecaster": "neso",
+   "delta": 0.05,
+   "theta": 115.5,
+   "outage_frac": 0.0,
+   "timeout_prob": 0.0,
+   "fallback": "fail_open"
+  }
+ }
+}

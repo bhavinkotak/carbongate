@@ -1,0 +1,86 @@
+{
+ "endpoint": "https://api.carbonintensity.org.uk/intensity/{start}/fw24h",
+ "retrieved_utc": "2026-11-05T03:56:51+00:00",
+ "samples": [
+  {
+   "seconds": 0.5836242500081426,
+   "ok": true
+  },
+  {
+   "seconds": 0.5118325000075856,
+   "ok": true
+  },
+  {
+   "seconds": 0.307108666995191,
+   "ok": true
+  },
+  {
+   "seconds": 0.5475505829963367,
+   "ok": true
+  },
+  {
+   "seconds": 0.5138570409908425,
+   "ok": true
+  },
+  {
+   "seconds": 0.5323146669979906,
+   "ok": true
+  },
+  {
+   "seconds": 0.593330750009045,
+   "ok": true
+  },
+  {
+   "seconds": 0.329642500000773,
+   "ok": true
+  },
+  {
+   "seconds": 0.5419317909982055,
+   "ok": true
+  },
+  {
+   "seconds": 0.5252016250015004,
+   "ok": true
+  },
+  {
+   "seconds": 0.535945041992818,
+   "ok": true
+  },
+  {
+   "seconds": 0.5160747090121731,
+   "ok": true
+  },
+  {
+   "seconds": 0.541071583997109,
+   "ok": true
+  },
+  {
+   "seconds": 0.6365974590007681,
+   "ok": true
+  },
+  {
+   "seconds": 0.5542540000024019,
+   "ok": true
+  },
+  {
+   "seconds": 0.5353769999928772,
+   "ok": true
+  },
+  {
+   "seconds": 0.5243712920055259,
+   "ok": true
+  },
+  {
+   "seconds": 0.5526613749971148,
+   "ok": true
+  },
+  {
+   "seconds": 0.5306396250089165,
+   "ok": true
+  },
+  {
+   "seconds": 0.5314534579956671,
+   "ok": true
+  }
+ ]
+}

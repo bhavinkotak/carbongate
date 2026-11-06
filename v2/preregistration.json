@@ -1,0 +1,27 @@
+{
+  "study": "CarbonGate v2: forecast-based deferral of GitOps deployments on the GB grid (trace-driven simulation)",
+  "registered_utc": "2026-11-04T00:00:00Z",
+  "registered_before": "Bulk download of the 12-month carbon-intensity record and before any policy simulation. Only a single 13-day probe (November 2025) was inspected to confirm the API response format.",
+  "data": {
+    "source": "NESO Carbon Intensity API, national /intensity/{from}/{to} (forecast and actual, 30-minute slots) and regional /regional/intensity/{from}/{to} (forecast only)",
+    "period_utc": ["2025-11-01T00:00Z", "2026-11-01T00:00Z"],
+    "calibration_window": "2025-11 (used only to fix the static threshold and the capacity cap)",
+    "held_out_windows": ["2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+  },
+  "workload": "SIMULATED non-homogeneous Poisson deployment arrivals (weekday 09:00-18:00 Europe/London rate 4 per hour, otherwise 0.25 per hour), 10% urgent deployments that bypass the gate, per-deployment energy from a declared CPU/memory power model (assumed coefficients).",
+  "seeds": [0, 1, 2, 3, 4],
+  "hypothesis_H1": "Forecast-based deferral (CarbonGate-F) with a 4 h maximum-delay SLA, deciding on the NESO forecast field only and scored on the NESO actual field, reduces deployment-attributed operational emissions relative to immediate deployment by at least 5% on held-out months, with zero SLA violations.",
+  "primary_endpoint": "Relative emission reduction R = 1 - sum_i E_i * I_actual(policy start_i) / sum_i E_i * I_actual(immediate start_i), computed per held-out month (seed-averaged over 5 seeds); summary = mean over 11 held-out months with a two-sided 95% t confidence interval (n = 11 months).",
+  "baseline": "Immediate deployment (standard GitOps reconciliation, no carbon gate).",
+  "comparators": ["static threshold gate (threshold = calibration-month median forecast, released at the SLA deadline)", "oracle deferral (perfect foresight of actual intensity within the SLA window; upper bound)"],
+  "decision_rule": {
+    "SUPPORTED": "lower 95% CI bound of mean R > 0.05 AND SLA violation count = 0 in the primary configuration",
+    "REFUTED": "upper 95% CI bound of mean R < 0.05 OR SLA violation count > 0 in the primary configuration",
+    "INCONCLUSIVE": "otherwise"
+  },
+  "falsification_rule": "H1 is refuted if the upper 95% CI bound of the mean held-out reduction is below 5%, or if any deployment in the primary configuration starts later than its 4 h deadline.",
+  "secondary_H2": "Replication of the v1 claim: mean R of CarbonGate-F (4 h) >= 0.23. SUPPORTED if the lower 95% CI bound > 0.23, REFUTED if the upper bound < 0.23, otherwise INCONCLUSIVE.",
+  "fixed_parameters": {"min_relative_gain_delta": 0.05, "primary_max_delay_h": 4, "max_delay_grid_h": [2, 4, 8], "urgent_fraction": 0.1},
+  "planned_ablations": ["forecast source (NESO forecast, day-ahead persistence, NESO forecast + Gaussian noise, actual)", "max-delay SLA 2/4/8 h", "deferral margin delta", "urgent fraction", "arrival shape (working hours vs uniform)", "region (regional forecast series, persistence decisions)", "forecaster outages and timeouts with fail-open, fail-closed, and cached-persistence fallbacks", "x100 load with a per-slot capacity cap"],
+  "untestable": ["developer acceptance (no users were studied)", "marginal-emission reductions (no marginal data for GB)", "behaviour on non-GB grids"]
+}
