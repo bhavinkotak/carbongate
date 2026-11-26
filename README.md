@@ -1,70 +1,56 @@
 # CarbonGate: Carbon-Aware Quality Gates for Kubernetes GitOps
 
-<!-- v2-release -->
-## Version 2.0 (November 2026)
-
-The v2 release is a preregistered, reproducible rewrite of the paper:
-**Carbon-Aware GitOps Gates Revisited: A Preregistered Trace-Driven Evaluation of CarbonGate on Great Britain Grid Data**
-
-- Paper, code, data sources, results and tests: [`v2/`](v2/)
-- Archived on Zenodo: [10.5281/zenodo.23970103](https://doi.org/10.5281/zenodo.23970103) (v1: [10.5281/zenodo.18527247](https://doi.org/10.5281/zenodo.18527247))
-- Preregistered verdict: H1: INCONCLUSIVE, H2_v1_claim: REFUTED
-- Reproduce: `python v2/code/run_all.py`
-
-Every number in the v2 paper is produced by this code from logged results. Claims from v1 that had no
-supporting data were removed; `v2/REVIEW.md` lists them.
-<!-- v2-release -->
-
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-blue.svg)](https://kubernetes.io/)
 [![Python](https://img.shields.io/badge/Python-3.9+-green.svg)](https://www.python.org/)
-[![Go](https://img.shields.io/badge/Go-1.21+-00ADD8.svg)](https://golang.org/)
+[![Zenodo v2.0](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23970103-blue)](https://doi.org/10.5281/zenodo.23970103)
 
-## Overview
+Carbon-intensity admission gates and a preregistered Great Britain grid simulation for Kubernetes GitOps delivery pipelines (Argo CD, Flux, and Tekton).
 
-CarbonGate is a framework for integrating carbon-awareness into GitOps workflows for Kubernetes deployments. It enables organizations to reduce deployment-associated carbon emissions by 23-31% while maintaining acceptable deployment velocity.
+![CarbonGate GitOps admission flowchart](./docs/diagrams/carbongate-gitops-flow.svg)
 
-## Key Features
+Interactive HTML version: [`docs/diagrams/carbongate-gitops-flow.html`](./docs/diagrams/carbongate-gitops-flow.html)
 
-- **Real-time Carbon Monitoring**: Integrates with WattTime and ElectricityMap APIs
-- **Intelligent Quality Gates**: Policy-based deployment decisions based on grid carbon intensity
-- **GitOps Integration**: Native support for ArgoCD, Flux, and Tekton
-- **Minimal Latency**: 28 seconds average for normal priority deployments
-- **Full Observability**: Prometheus metrics and Grafana dashboards
+<!-- v2-release -->
+## Version 2.0 study (November 2026)
 
-## Quick Start
+Version 2.0 is a preregistered, reproducible rewrite of the paper:
+*Carbon-Aware GitOps Gates Revisited: A Preregistered Trace-Driven Evaluation of CarbonGate on Great Britain Grid Data*.
 
-### Prerequisites
+- Paper, simulation code, cached NESO grid series, results, and tests: [`v2/`](v2/)
+- Zenodo archive: [10.5281/zenodo.23970103](https://doi.org/10.5281/zenodo.23970103) (replaces v1 [10.5281/zenodo.18527247](https://doi.org/10.5281/zenodo.18527247))
+- Preregistered verdicts (`v2/results/verdict.json`): `H1` (`>= 5%` reduction under a 4 h SLA) is `INCONCLUSIVE` at 4.80% mean reduction (95% CI 4.17% to 5.43% across 11 held-out months x 5 seeds, 0 SLA violations); `H2_v1_claim` (`>= 23%`) is `REFUTED`
+- Reproduce every figure and table from raw data: `python v2/code/run_all.py`
 
-- Kubernetes 1.24+
-- Helm 3.x
-- WattTime or ElectricityMap API credentials
+Unsupported v1 claims were audited and removed; [`v2/REVIEW.md`](v2/REVIEW.md) documents each change.
+<!-- v2-release -->
 
-### Installation
+## How the gate works
 
-```bash
-# Add Helm repository
-helm repo add carbongate https://carbongate.github.io/charts
-helm repo update
+When Argo CD, Flux, or Tekton starts a sync, CarbonGate checks whether the deployment carries an urgent or hotfix override. Urgent changes roll out right away. Standard deployments query the grid carbon-intensity forecast across the remaining SLA window (for example 4 hours on 30-minute NESO slots, or WattTime and Electricity Maps where configured).
 
-# Install CarbonGate operator
-helm install carbongate carbongate/carbongate-operator \
-  --namespace carbongate-system \
-  --create-namespace \
-  --set carbonApi.provider=watttime \
-  --set carbonApi.apiKeySecret=carbongate-api-credentials
-```
+If a future slot inside the SLA window is cleaner than the current slot by at least `delta` (default 5%), CarbonGate defers the sync to the lowest-intensity slot. If the current slot is already the cleanest option, or the forecast endpoint times out under a `fail_open` or `cached_persistence` fallback, the sync proceeds immediately.
 
-### Create API Credentials Secret
+## CLI and library usage
+
+`src/carbongate/` contains the Python gate package and CLI (`carbongate`), while `v2/code/carbongate/` holds the pure decision rule (`decide()`) and trace simulator used in the v2 paper.
 
 ```bash
-kubectl create secret generic carbongate-api-credentials \
-  --namespace carbongate-system \
-  --from-literal=api-key=$WATTTIME_API_KEY \
-  --from-literal=username=$WATTTIME_USERNAME
+git clone https://github.com/bhavinkotak/carbongate.git
+cd carbongate
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+
+# Run package unit tests and v2 study tests
+pytest tests/ v2/tests/ -v
+
+# Check a deployment from the CLI
+carbongate check --deployment my-app --cpu 4 --memory 8 --priority normal
 ```
 
-### Configure Carbon Policy
+## Example policy configuration
 
 ```yaml
 apiVersion: carbongate.io/v1
@@ -74,82 +60,30 @@ metadata:
   namespace: carbongate-system
 spec:
   thresholds:
-    green: 150      # g CO2/kWh - proceed immediately
-    yellow: 300     # g CO2/kWh - proceed with warning
-    red: 450        # g CO2/kWh - defer or require approval
-  
+    green: 150      # g CO2/kWh: proceed immediately
+    yellow: 300     # g CO2/kWh: proceed with warning
+    red: 450        # g CO2/kWh: defer within SLA or require approval
+
   actions:
     green: proceed
     yellow: proceed-with-warning
     red: defer-or-approve
-  
+
   overrides:
     - priority: critical
       action: always-proceed
     - namespace: production-hotfix
       action: always-proceed
-  
+
   deferral:
     maxWaitTime: 4h
     checkInterval: 15m
     forecastHorizon: 24h
 ```
 
-## Architecture
+## GitOps hook examples
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        CarbonGate Architecture                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌──────────┐     ┌──────────────┐     ┌─────────────────────────────────┐ │
-│   │   Git    │────▶│   GitOps     │────▶│         CarbonGate              │ │
-│   │  Repo    │     │  Controller  │     │  ┌─────────────────────────┐    │ │
-│   └──────────┘     │  (ArgoCD/    │     │  │   Carbon Intensity      │◀───┼─┼── WattTime/
-│                    │   Flux)      │     │  │      Fetcher            │    │ │   ElectricityMap
-│                    └──────────────┘     │  └───────────┬─────────────┘    │ │
-│                                         │              │                   │ │
-│                                         │  ┌───────────▼─────────────┐    │ │
-│                                         │  │   Carbon Estimator      │    │ │
-│                                         │  └───────────┬─────────────┘    │ │
-│                                         │              │                   │ │
-│                                         │  ┌───────────▼─────────────┐    │ │
-│                                         │  │    Quality Gate         │    │ │
-│                                         │  │    Controller           │    │ │
-│                                         │  └───────────┬─────────────┘    │ │
-│                                         │              │                   │ │
-│                                         │  ┌───────────▼─────────────┐    │ │
-│                                         │  │  Deployment Scheduler   │    │ │
-│                                         │  └───────────┬─────────────┘    │ │
-│                                         └──────────────┼──────────────────┘ │
-│                                                        │                     │
-│                                                        ▼                     │
-│                                         ┌─────────────────────────────────┐ │
-│                                         │      Kubernetes Cluster         │ │
-│                                         └─────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-## Carbon Estimation Model
-
-CarbonGate estimates deployment carbon impact using:
-
-```
-C_deploy = E_compute × PUE × I_carbon × T_duration
-```
-
-### Default Power Coefficients
-
-| Resource | Coefficient | Source |
-|----------|-------------|--------|
-| CPU (per core) | 10W active / 3W idle | Intel/AMD specifications |
-| Memory (per GB) | 0.375W | DDR4/DDR5 specifications |
-| Network (per Gbps) | 0.5W | Switch measurements |
-| Storage I/O (per MB/s) | 0.01W | SSD specifications |
-
-## Integrations
-
-### ArgoCD
+### Argo CD PreSync job
 
 ```yaml
 apiVersion: batch/v1
@@ -171,7 +105,7 @@ spec:
       restartPolicy: Never
 ```
 
-### Flux
+### Flux webhook receiver
 
 ```yaml
 apiVersion: notification.toolkit.fluxcd.io/v1
@@ -187,7 +121,7 @@ spec:
       name: "*"
 ```
 
-### Tekton
+### Tekton task
 
 ```yaml
 apiVersion: tekton.dev/v1beta1
@@ -202,143 +136,55 @@ spec:
       carbongate check --policy=default-policy
 ```
 
-## Metrics and Observability
+## Carbon estimation formula
 
-### Prometheus Metrics
+`src/carbongate/estimator.py` models transient deployment energy as `C_deploy = E_compute * PUE * I_carbon * T_duration`, using default assumptions of 10 W per active core, 3 W per idle core, 0.375 W per GB of memory, 0.5 W per Gbps of network, and 0.01 W per MB/s of storage I/O. As shown in `v2/`, relative intensity reduction for homogeneous rollout durations is invariant to the linear energy scale factor.
 
-| Metric | Description |
-|--------|-------------|
-| `carbongate_deployments_total` | Total deployments processed |
-| `carbongate_carbon_saved_grams` | Cumulative carbon saved |
-| `carbongate_current_intensity` | Current grid carbon intensity |
-| `carbongate_deferral_duration_seconds` | Time deployments spent deferred |
+## Preregistered evaluation summary (v2.0)
 
-### Grafana Dashboard
+Evaluated on 12 months of Great Britain NESO half-hourly carbon-intensity forecasts and actuals (1 calibration month, 11 held-out months, 5 workload seeds, 10% urgent bypass share):
 
-Import the dashboard from `dashboards/carbongate.json` or use dashboard ID: `XXXXX`
+| Policy / test | Result | Notes |
+|---|---|---|
+| `CarbonGate-F` (4 h SLA, NESO forecast) | 4.80% mean reduction | 95% CI [4.17%, 5.43%]; 0.369 kg saved of 7.52 kg CO2 per seed; 0 SLA misses |
+| `H1` (`>= 5%` mean reduction at 4 h SLA) | `INCONCLUSIVE` | CI straddles the preregistered 5% boundary |
+| `H2` (v1 claim of `>= 23%` reduction) | `REFUTED` | Measured savings sit near 5%, shifting rollout transients only |
+| Static threshold gate (v1 rule, 2 h and 4 h) | `<= 0%` reduction | Waiting for a fixed threshold often expires at a dirtier deadline slot |
+| Outage fallbacks (`fail_open`, `cached_persistence`) | 0 SLA violations | `fail_closed` violates SLAs during extended forecast outages |
 
-## Project Structure
+## Repository layout
 
+```text
+carbongate/
+├── docs/diagrams/          Editorial admission flow (.html + .svg)
+├── src/carbongate/         Python package: estimator, gate controller, and CLI
+├── tests/                  Unit tests for estimator and gate controller
+├── v2/
+│   ├── REVIEW.md           Audit of v1 claims and v2 methodology fixes
+│   ├── preregistration.json Locked hypotheses and falsifiers
+│   ├── code/               NESO downloader, pure gate rule, simulator, figure/table builders
+│   ├── data/               Cached Great Britain national/regional JSON.gz + SHA-256 manifest
+│   ├── paper/              LaTeX manuscript and compiled PDF
+│   ├── results/            Generated CSVs and JSON summaries (verdict.json)
+│   └── tests/              24 pytest checks for gate rules, outages, and simulator invariants
+├── CITATION.cff
+└── pyproject.toml
 ```
-green-gitops/
-├── README.md
-├── requirements.txt
-├── setup.py
-├── src/
-│   ├── __init__.py
-│   ├── carbongate/
-│   │   ├── __init__.py
-│   │   ├── estimator.py        # Carbon estimation logic
-│   │   ├── fetcher.py          # Carbon intensity API client
-│   │   ├── gate.py             # Quality gate controller
-│   │   ├── scheduler.py        # Deferral scheduler
-│   │   └── policy.py           # Policy engine
-│   ├── integrations/
-│   │   ├── argocd.py
-│   │   ├── flux.py
-│   │   └── tekton.py
-│   └── api/
-│       ├── watttime.py
-│       └── electricitymap.py
-├── tests/
-│   ├── test_estimator.py
-│   ├── test_gate.py
-│   └── test_integrations.py
-├── helm/
-│   └── carbongate/
-├── dashboards/
-│   └── carbongate.json
-└── docs/
-    ├── architecture.md
-    ├── configuration.md
-    └── troubleshooting.md
-```
-
-## Evaluation Results
-
-### Carbon Reduction (6-month evaluation)
-
-| Environment | Baseline | With CarbonGate | Reduction |
-|-------------|----------|-----------------|-----------|
-| US-East (AWS) | 2,847 kg CO₂ | 2,190 kg CO₂ | **23.1%** |
-| EU-West (Azure) | 1,523 kg CO₂ | 1,089 kg CO₂ | **28.5%** |
-| Asia-Pacific (GCP) | 2,156 kg CO₂ | 1,478 kg CO₂ | **31.4%** |
-
-### Deployment Latency
-
-| Priority | Mean Latency | P95 Latency |
-|----------|--------------|-------------|
-| Critical | 0s (bypass) | 0s |
-| High | 8s | 45s |
-| Normal | 28s | 4m |
-| Low | 2h 15m | 3h 45m |
-
-## Development
-
-### Setup
-
-```bash
-# Clone repository
-git clone https://github.com/bhavinkotak/carbongate
-cd carbongate
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-pip install -e ".[dev]"
-
-# Run tests
-pytest tests/ -v
-```
-
-### Running Locally
-
-```bash
-# Set API credentials
-export WATTTIME_USERNAME=your_username
-export WATTTIME_PASSWORD=your_password
-
-# Run carbon gate check
-python -m carbongate.gate check --deployment=my-app --region=us-east-1
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## Citation
 
 ```bibtex
-@article{kotak2026carbongate,
-  title={Carbon-Aware GitOps: Implementing Energy-Efficient Quality Gates 
-         in Kubernetes Delivery Workflows},
-  author={Kotak, Bhavin},
-  year={2026},
-  note={Zenodo DOI pending}
+@misc{kotak2026carbongate_v2,
+  title  = {Carbon-Aware GitOps Gates Revisited: A Preregistered Trace-Driven Evaluation of CarbonGate on Great Britain Grid Data},
+  author = {Kotak, Bhavin},
+  year   = {2026},
+  doi    = {10.5281/zenodo.23970103},
+  url    = {https://doi.org/10.5281/zenodo.23970103}
 }
 ```
 
-## License
+## License and author
 
-This project is licensed under the Apache License 2.0 - see [LICENSE](LICENSE) file.
+Licensed under Apache 2.0; see [LICENSE](LICENSE).
 
-## Author
-
-**Bhavin Kotak**  
-IBM Corporation  
-bhavin.kotak@ibm.com  
-ORCID: [0009-0006-4793-7046](https://orcid.org/0009-0006-4793-7046)
-
-## Acknowledgments
-
-- [Green Software Foundation](https://greensoftware.foundation)
-- [WattTime](https://www.watttime.org)
-- [ElectricityMap](https://www.electricitymaps.com)
-- [CNCF TAG Environmental Sustainability](https://github.com/cncf/tag-env-sustainability)
+Bhavin Kotak (bhavin.kotak@ibm.com), ORCID [0009-0006-4793-7046](https://orcid.org/0009-0006-4793-7046).
